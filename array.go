@@ -32,8 +32,8 @@ func (m *Array) Search(fn func(item interface{}, index int) bool) ([]int) {
 	m.lock.Lock()
 
 	var indices []int
-	for index, item := range m.data{
-		if fn(item, index){
+	for index, item := range m.data {
+		if fn(item, index) {
 			indices = append(indices, index)
 			break
 		}
@@ -114,5 +114,13 @@ func (m *Array) Splice(from int, count int) ([]interface{}, bool) {
 		return items, true
 	} else {
 		return nil, false
+	}
+}
+
+func (m *Array) ForEach(fn func(item interface{}, index int, array *Array) bool) {
+	for index, item := range m.data {
+		if fn(item, index, m) {
+			break
+		}
 	}
 }
