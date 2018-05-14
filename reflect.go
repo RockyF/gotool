@@ -2,25 +2,19 @@ package gotool
 
 import (
 	"reflect"
-	"fmt"
 )
 
-func Inject(target interface{}, kv map[string]interface{}) error{
-	var success = true
-
+func Inject(target interface{}, kv map[string]interface{}){
 	for k, v := range kv{
 		elem := reflect.ValueOf(target).Elem()
 		field := elem.FieldByName(k)
+
+		var val reflect.Value
 		if reflect.ValueOf(v).Type() == field.Type() {
-			field.Set(reflect.ValueOf(v))
+			val = reflect.ValueOf(v)
 		}else{
-			success = false
+			val = reflect.ValueOf(v).Convert(field.Type())
 		}
+		field.Set(val)
 	}
-
-	if !success{
-		return fmt.Errorf("some field(s) can not inject")
-	}
-
-	return nil
 }
